@@ -3,6 +3,16 @@
 <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
 <!-- we import arjs version without NFT but with marker + location based support -->
 <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+<script>
+    var room = {
+        name: "Cafe",
+        id = "RM1",
+        maxCap = 20,
+        curCap = 15
+    }
+    document.getElementById('RM1Inner').height = .25
+    document.getElementById('RM1Inner').color = "green"
+</script>
 
 <body style="margin : 0px; overflow: hidden;">
     <a-scene embedded arjs>
@@ -10,16 +20,12 @@
             <!--BackGround-->
             <a-plane color="grey" height="5" width="5" rotation="-90 0 0">
                 <!--Box Objects-->
-                <a-box color="black" depth=".25" height="1" width="0.24" position="0 0 .25" wireframe="true" wireframe-linewidth="4">
-                    <a-box color="red" depth=".23" height=".5" width="0.23" position="0 -.25 0"></a-box>
-                    <a-entity text="value: Hello World; color: black;" position=".25 0 0" scale="2 2 1"></a-entity>
+                <a-box id="RM1Outer" color="black" depth=".25" height="1" width="0.24" position="0 0 .25" wireframe="true" wireframe-linewidth="4">
+                    <a-box id="RM1Inner" color="red" depth=".23" height=".5" width="0.23" position="0 -.25 0"></a-box>
+                    <a-entity id="RM1Text" text="value: Hello World; color: black;" position="-.25 0 0" scale="2 2 1">
+                    </a-entity>
 
                 </a-box>
-
-
-                <a-cylinder color="black" height="1" radius=".25" wireframe="true" wireframe-linewidth="2" position=".5 0 0">
-                    <a-cylinder color="red" height=".5" radius=".23" position="0 -.25 0"></a-cylinder>
-                </a-cylinder>
             </a-plane>
         </a-marker>
         <a-entity camera></a-entity>
