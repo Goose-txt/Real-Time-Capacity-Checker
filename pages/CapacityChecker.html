@@ -10,8 +10,11 @@
         maxCap = 20,
         curCap = 15
     }
-    document.getElementById('RM1Inner').height = .25
-    document.getElementById('RM1Inner').color = "green"
+
+    function setCapIndicator() {
+        document.getElementById('RM1Inner').height = .25
+        document.getElementById('RM1Inner').color = "green"
+    }
 </script>
 
 <body style="margin : 0px; overflow: hidden;">
@@ -21,7 +24,7 @@
             <a-plane color="grey" height="5" width="5" rotation="-90 0 0">
                 <!--Box Objects-->
                 <a-box id="RM1Outer" color="black" depth=".25" height="1" width="0.24" position="0 0 .25" wireframe="true" wireframe-linewidth="4">
-                    <a-box id="RM1Inner" color="red" depth=".23" height=".5" width="0.23" position="0 -.25 0"></a-box>
+                    <a-box id="RM1Inner" onload="setCapIndicator()" color="red" depth=".23" height=".5" width="0.23" position="0 -.25 0"></a-box>
                     <a-entity id="RM1Text" text="value: Hello World; color: black;" position="-.25 0 0" scale="2 2 1">
                     </a-entity>
 
