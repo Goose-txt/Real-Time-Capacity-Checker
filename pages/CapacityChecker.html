@@ -22,7 +22,7 @@
             var curCap = room.currentCap / room.maxCap
 
             var outerHeight = outerBox.getAttribute('height')
-            var innerPos = "0 " + String(((outerHeight - curCap) / 2) - outerHeight) + " 0"
+            var innerPos = "0 " + String((outerHeight - (outerHeight - curCap) / 2)) + " 0"
 
             innerBox.setAttribute('height', curCap)
             innerBox.setAttribute('position', innerPos)
