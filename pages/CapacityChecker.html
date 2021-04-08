@@ -19,10 +19,12 @@
             var stringToLog = this.data;
             console.log(stringToLog);
 
-            var innerHeight = room.currentCap / room.maxCap
+            var curCap = room.currentCap / room.maxCap
+
             var outerHeight = outerBox.getAttribute('height')
-            var innerPos = "0 " + String(innerHeight - (outerHeight * 2)) + " 0"
-            innerBox.setAttribute('height', innerHeight)
+            var innerPos = "0 " + String((outerHeight - curCap) / 2) + " 0"
+
+            innerBox.setAttribute('height', curCap)
             innerBox.setAttribute('position', innerPos)
         }
     });
