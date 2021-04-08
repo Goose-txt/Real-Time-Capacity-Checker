@@ -22,7 +22,9 @@
             var curCap = room.currentCap / room.maxCap
 
             var outerHeight = outerBox.getAttribute('height')
-            var innerPos = "0 " + String((outerHeight - ((outerHeight - curCap) / 2))) + " 0"
+            var y = outerHeight - curCap
+            y = y - (y * 2) // Sign Reversal
+            var innerPos = "0 " + String(y) + " 0"
 
             innerBox.setAttribute('height', curCap)
             innerBox.setAttribute('position', innerPos)
