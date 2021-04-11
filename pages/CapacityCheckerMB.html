@@ -34,7 +34,8 @@
     });
 
     var entityEl = document.createElement('a-entity'); // Object creation
-    entityEl.setAttribute('geometry="primitive: box"', material = "color: red");
+    entityEl.setAttribute('log', "Hello, Box")
+    entityEl.setAttribute('geometry', "primitive: box; depth:2; height:2; width:2;")
     sceneEl.appendChild(entityEl);
 </script>
 
