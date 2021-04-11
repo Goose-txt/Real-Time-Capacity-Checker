@@ -10,6 +10,7 @@
         currentCap: 20
     }
 
+    var sceneEl = document.querySelector('a-scene'); // Scene Selection
 
 
     AFRAME.registerComponent('log', {
@@ -20,11 +21,8 @@
         init: function() {
             var stringToLog = this.data;
             console.log(stringToLog);
-            var sceneEl = document.querySelector('a-scene'); // Scene Selection
-            var entityEl = document.createElement('a-entity'); // Object creation
-            entityEl.setAttribute('log', "Hello, ball form init")
-            entityEl.setAttribute('geometry', "primitive: sphere; radius: 1.5")
-            sceneEl.appendChild(entityEl);
+
+
 
             /*var curCap = room.currentCap / room.maxCap
 
@@ -40,7 +38,7 @@
 
     var entityEl = document.createElement('a-entity'); // Object creation
     entityEl.setAttribute('log', "Hello, ball")
-    entityEl.setAttribute('geometry', "primitive: sphere; radius: 1.5")
+    entityEl.setAttribute('geometry', "primitive: sphere; radius: 1.5;")
     sceneEl.appendChild(entityEl);
 </script>
 
