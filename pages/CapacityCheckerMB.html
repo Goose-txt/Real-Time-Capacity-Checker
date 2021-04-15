@@ -10,8 +10,8 @@
         currentCap: 20
     }
 
-    var sceneEl = document.querySelector('a-scene'); // Scene Selection
-    var marker = document.querySelector('ARJSME');
+    // var sceneEl = document.querySelector('a-scene'); // Scene Selection
+    // var marker = document.querySelector('ARJSME');
 
     AFRAME.registerComponent('log', {
         schema: {
@@ -24,7 +24,7 @@
 
 
 
-            /*var curCap = room.currentCap / room.maxCap
+            var curCap = room.currentCap / room.maxCap
 
             var outerHeight = outerBox.getAttribute('height')
             var y = (outerHeight - curCap) / 2
@@ -32,30 +32,30 @@
             var innerPos = "0 " + String(y) + " 0"
 
             innerBox.setAttribute('height', curCap)
-            innerBox.setAttribute('position', innerPos)*/
+            innerBox.setAttribute('position', innerPos)
         }
     });
 
-    var entityEl = document.createElement('a-entity'); // Object creation
-    entityEl.setAttribute('log', "Hello, ball")
-    entityEl.setAttribute('geometry', "primitive: sphere; radius: 1.5;")
-    marker.appendChild(entityEl);
+    // var entityEl = document.createElement('a-entity'); // Object creation
+    // entityEl.setAttribute('log', "Hello, ball")
+    // entityEl.setAttribute('geometry', "primitive: sphere; radius: 1.5;")
+    //.appendChild(entityEl);
 </script>
 
 <body style="margin : 0px; overflow: hidden;">
     <a-scene embedded arjs log="Hello, Scene">
         <a-marker id="ARJSME" preset="hiro">
-            <!--BackGround
-            <a-plane color="grey" height="5" width="5" rotation="-90 0 0">
-                Box Objects
-                <a-box id="outerBox" log="Hello, Box" color="black" depth=".25" height="1" width="0.24" position="0 0 .25" wireframe="true" wireframe-linewidth="4">
-                    <a-box id="innerBox" color="red" depth=".20" height=".1" width="0.20" position="0 -.25 0"></a-box>
-                    <a-entity text="value: Hello World; color: black;" position="-.25 0 0" scale="2 2 1">
-                    </a-entity>
-
-                </a-box>
-            </a-plane>-->
+            <!--BackGround-->
         </a-marker>
+        <a-plane color="grey" height="5" width="5" rotation="-90 0 0">
+            Box Objects
+            <a-box id="outerBox" log="Hello, Box" color="black" depth=".25" height="1" width="0.24" position="0 0 .25" wireframe="true" wireframe-linewidth="4">
+                <a-box id="innerBox" color="red" depth=".20" height=".1" width="0.20" position="0 -.25 0"></a-box>
+                <a-entity text="value: Hello World; color: black;" position="-.25 0 0" scale="2 2 1">
+                </a-entity>
+
+            </a-box>
+        </a-plane>
         <a-entity camera></a-entity>
     </a-scene>
 </body>
