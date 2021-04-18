@@ -4,6 +4,23 @@
 <!-- we import arjs version without NFT but with marker + location based support -->
 <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
 <script>
+    var rooms = [
+        "Pontio", {
+            name: "Bar",
+            maxCap: 15,
+            currentCap: 3
+        }, {
+            name: "Cinema",
+            maxCap: 50,
+            currentCap: 25
+        }, {
+            name: "Lecture Room",
+            maxCap: 25,
+            currentCap: 7
+        }
+    ]
+
+
     var room = {
         name: "cafe",
         maxCap: 30,
@@ -37,98 +54,118 @@
         init: function() {
             var stringToLog = this.data;
             console.log(stringToLog);
-
-            sceneEl = document.querySelector("a-plane");
-
-            var curCap = room.currentCap / room.maxCap
-
-            var outerHeight = outerBox.getAttribute('height')
-            var y = (outerHeight - curCap) / 2
-            y = y - (y * 2) // Sign Reversal
-            var innerPos = "0 " + String(y) + " 0"
-
-            innerBox.setAttribute('height', curCap)
-            innerBox.setAttribute('position', innerPos)
-
-            // __________ Outer Box creation__________ 
-            var outerBoxEl = document.createElement('a-entity');
-            outerBoxEl.setAttribute('do-something-once-loaded', '');
-
-            // Attributes
-            outerBoxEl.setAttribute('id', "testOuter")
-            outerBoxEl.setAttribute('geometry', {
-                primitive: 'box',
-                height: outerBoxSpec.height,
-                width: outerBoxSpec.width,
-                depth: outerBoxSpec.depth,
-                position: "0 0 .25"
-            });
-
-            // Apperance
-            outerBoxEl.setAttribute('material', {
-                color: outerBoxSpec.color,
-                wireframe: outerBoxSpec.wireframeEnabled
-            });
-
-            // Position
-            outerBoxEl.setAttribute('position', {
-                x: 0,
-                y: 0,
-                z: .25
-            })
-
-            // __________ Inner Box creation__________ 
-            var innerBoxEl = document.createElement('a-entity');
-            innerBoxEl.setAttribute('do-something-once-loaded', '');
-
-            // Attributes
-            innerBoxEl.setAttribute('geometry', {
-                primitive: 'box',
-                height: curCap,
-                width: innerBoxSpec.width,
-                depth: innerBoxSpec.depth,
-                position: "0 0 .25"
-            });
-
-            // Apperance
-            innerBoxEl.setAttribute('material', {
-                color: innerBoxSpec.color,
-            });
-
-            // Position
-            innerBoxEl.setAttribute('position',
-                innerPos
-            )
-
-
-            // Adding Boxes to the scene
-            sceneEl.appendChild(outerBoxEl);
-            testOuter.appendChild(innerBoxEl);
         }
     });
 
-    AFRAME.registerComponent('do-something-once-loaded', {
+
+    AFRAME.registerComponent('build', { // Remeber to call the Method in an entity parameters 
         init: function() {
-            // This will be called after the entity has properly attached and loaded.
-            console.log('I am ready!');
+            background = document.querySelector("a-plane"); // Select the background
+
+            var numOfObjects = rooms.length; // Find number of objects
+            var bkHeight = background.getAttribute('height');
+            var c = 0;
+            var spacing = bkHeight / numOfObjects;
+            var y = spacing * (numOfObjects / 2);
+
+            for (x in rooms) {
+                var el = document.createElement('a-entity');
+
+                if (c == 0) { //Create & Postion title
+                    el.setAttribute('id', "title");
+                    el.setAttribute('text', {
+                        value: rooms[0],
+                        color: "black"
+                    });
+                    el.setAttribute('position', "1 " + (y - (y * .1)) + " 0.1");
+                    el.setAttribute('scale', "2.75 2.75 1");
+
+                } else {
+                    // Outer Box
+                    // Attributes
+                    el.setAttribute('id', rooms[c].name);
+                    el.setAttribute('geometry', {
+                        primitive: 'box',
+                        height: outerBoxSpec.height,
+                        width: outerBoxSpec.width,
+                        depth: outerBoxSpec.depth,
+                    });
+                    // Apperance
+                    el.setAttribute('material', {
+                        color: outerBoxSpec.color,
+                        wireframe: outerBoxSpec.wireframeEnabled
+                    });
+                    // Position
+                    el.setAttribute('position', {
+                        x: -1,
+                        y: y,
+                        z: .25
+                    });
+
+                    // Calculating the current capcity of the room
+                    var curCap = rooms[c].currentCap / rooms[c].maxCap;
+                    var offSet = (1 - curCap) / 2;
+                    offSet = offSet - (offSet * 2); // Sign Reversal
+                    innerBoxSpec.height = offSet;
+
+                    // Inner Box defintion
+                    var capIndicator = document.createElement('a-entity');
+                    // Attributes
+                    capIndicator.setAttribute('geometry', {
+                        primitive: 'box',
+                        height: curCap,
+                        width: innerBoxSpec.width,
+                        depth: innerBoxSpec.depth,
+                    });
+                    // Apperance
+                    capIndicator.setAttribute('material', {
+                        color: innerBoxSpec.color,
+                    });
+                    // Position
+                    capIndicator.setAttribute('position', {
+                        x: -1,
+                        y: offSet - y,
+                        z: .25
+                    });
+
+
+                    var roomHeader = document.createElement('a-entity');
+                    roomHeader.setAttribute('id', rooms[c].name + "Header");
+                    roomHeader.setAttribute('text', {
+                        value: rooms[c].name,
+                        color: "black"
+                    });
+                    roomHeader.setAttribute('position', "1 " + y + " 0.1");
+                    roomHeader.setAttribute('scale', "2.5 2.5 1");
+
+                    background.appendChild(roomHeader);
+                    background.appendChild(capIndicator); // This doesn't work. Find work around.
+
+                }
+                background.appendChild(el);
+                c++;
+                y = y - spacing;
+            }
         }
     });
 </script>
 
 <body style="margin : 0px; overflow: hidden;">
     <a-scene embedded arjs>
-        <a-marker preset="hiro">
+        <a-marker id="marker" preset="hiro">
             <!--BackGround-->
-            <a-plane id="bkGround" color="grey" height="5" width="5" rotation="-90 0 0">
-                <a-entity text="value: Pontio; color: black;" position="0 0 .1" scale="2 2 1"></a-entity>
-                <!--Box Objects-->
-                <a-box id="outerBox" log="Hello, Box" color="black" depth=".25" height="1" width="0.24" position="1 0 .25" wireframe="true" wireframe-linewidth="4">
-                    <a-box id="innerBox" color="red" depth=".20" height=".1" width="0.20" position="0 -.25 0"></a-box>
-                    <a-entity text="value: Hello Box; color: black;" position="-.25 0 0" scale="2 2 1">
-                    </a-entity>
+            <a-plane log="Hello Plane!" build id="background" color="grey" width="3" height="4.5" rotation="-90 0 0">
 
-                </a-box>
+                <!-- <a-entity text="value: Pontio; color: black;" position="0 0 .1" scale="2 2 1"></a-entity>-->
+
+                <!--<a-box id="outerBox" color="black" depth=".25" height="1" width="0.24" position="1 0 .25" wireframe="true" wireframe-linewidth="4">
+                    <a-box id="innerBox" color="red" depth=".20" height=".1" width="0.20" position="0 -.25 0"></a-box>
+                    <a-entity text="value: Hello Box; color: black;" position="1.25 0 0" scale="2 2 1">
+                    </a-entity>
+                </a-box>-->
+
             </a-plane>
+
         </a-marker>
         <a-entity camera></a-entity>
     </a-scene>
