@@ -4,25 +4,32 @@
 <!-- we import arjs version without NFT but with marker + location based support -->
 <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
 <script>
-    var rooms = [
+    var rooms = [ // Data
         "Pontio", {
             name: "Bar",
             maxCap: 15,
-            currentCap: 15
+            currentCap: 5
         }, {
             name: "Cinema",
             maxCap: 50,
-            currentCap: 0
+            currentCap: 30
         }, {
             name: "Lecture Room",
-            maxCap: 25,
-            currentCap: 1
+            maxCap: 26,
+            currentCap: 0
         }, {
-            name: "Meeting Room",
-            maxCap: 10,
-            currentCap: 7
+            name: "Cafe",
+            maxCap: 23,
+            currentCap: 25
         }
     ]
+
+    var boxesXYZ = {
+        x: -1,
+        y: null,
+        z: .25,
+        padding: null
+    }
 
     var outerBoxSpec = {
         height: 1,
@@ -30,17 +37,20 @@
         depth: .25,
         wireFrameWidth: 4,
         wireframeEnabled: "True",
-        color: "black"
+        color: "black",
+        opacity: 0.25,
+        transparent: "true"
     }
 
     var innerBoxSpec = {
-        height: 0,
+        height: null,
         width: .20,
         depth: .20,
-        wireFrameWidth: 0,
-        wireframeEnabled: "False",
-        color: "red"
+        color: "red",
+        padding: 0.04,
+        yOffset: null
     }
+
 
     AFRAME.registerComponent('build', { // Remeber to call the Method in an entity parameters 
         init: function() {
@@ -50,38 +60,23 @@
             bkHeight = numOfObjects + (numOfObjects * .15);
             background.setAttribute('height', bkHeight)
 
-            var c = 0;
-            var spacing = bkHeight / numOfObjects;
-            var y = spacing * (numOfObjects / 2);
+            boxesXYZ.padding = bkHeight / numOfObjects;
+            boxesXYZ.y = boxesXYZ.padding * (numOfObjects / 2);
 
+            var c = 0;
             for (x in rooms) {
                 var el = document.createElement('a-entity');
 
                 if (c == 0) { //Create & Postion title
                     el.setAttribute('id', "title");
                     el.setAttribute('text', {
-                        value: rooms[0] + " Room Capacity Checker",
+                        value: rooms[0] + " Capacity Checker",
                         color: "black"
                     });
-                    el.setAttribute('position', "0.75 " + (y - (y * .1)) + " 0.1");
+                    el.setAttribute('position', "1 " + (boxesXYZ.y - (boxesXYZ.y * .1)) + " 0.1");
                     el.setAttribute('scale', "4 4 1");
 
                 } else {
-                    // Calculating the current capcity of the room (Height of the InnerBox) #########################################
-                    var currentCap = rooms[c].currentCap;
-                    if (currentCap <= 0) { // Room is empty
-                        currentCap = .001;
-                    } else if (currentCap >= rooms[c].maxCap) { // Room is full
-                        currentCap = outerBoxSpec.height;
-                    } else {
-                        currentCap = currentCap / rooms[c].maxCap; // Room is neither empty nor full
-                    }
-                    innerBoxSpec.height = currentCap;
-
-                    // Calculating the Y pos of the Innerbox based on the height
-                    var offSet = (1 - currentCap) / 2;
-                    offSet = offSet - (offSet * 2); // Sign Reversal
-
 
                     // Outer Box defintion #########################################
                     // Attributes
@@ -95,64 +90,69 @@
                     // Apperance
                     el.setAttribute('material', {
                         color: outerBoxSpec.color,
-                        wireframe: outerBoxSpec.wireframeEnabled
+                        opacity: outerBoxSpec.opacity,
+                        transparent: outerBoxSpec.transparent
                     });
                     // Position
                     el.setAttribute('position', {
-                        x: -1,
-                        y: y,
-                        z: .25
+                        x: boxesXYZ.x,
+                        y: boxesXYZ.y,
+                        z: boxesXYZ.z
                     });
 
-
-                    // Inner Box defintion #########################################
-                    var capIndicator = document.createElement('a-entity');
-                    // Attributes
-                    capIndicator.setAttribute('geometry', {
-                        primitive: 'box',
-                        height: innerBoxSpec.height,
-                        width: innerBoxSpec.width,
-                        depth: innerBoxSpec.depth,
-                    });
-                    // Apperance
-                    capIndicator.setAttribute('material', {
-                        color: innerBoxSpec.color,
-                    });
-                    // Position
-                    capIndicator.setAttribute('position', {
-                        x: -1,
-                        y: offSet + y,
-                        z: .25
-                    });
-
-                    // Room headers #########################################
+                    // Room headers defintion #########################################
                     var roomHeader = document.createElement('a-entity');
                     roomHeader.setAttribute('id', rooms[c].name + "Header");
                     roomHeader.setAttribute('text', {
                         value: rooms[c].name + "\n" + rooms[c].currentCap + "/" + rooms[c].maxCap,
                         color: "black"
                     });
-                    roomHeader.setAttribute('position', ".5 " + y + " 0.1");
+                    roomHeader.setAttribute('position', ".5 " + boxesXYZ.y + " 0.1");
                     roomHeader.setAttribute('scale', "2.5 2.5 1");
-
                     background.appendChild(roomHeader);
-                    background.appendChild(capIndicator);
+
+                    // Calculating the current capcity of the room (Height of the InnerBox) #########################################
+                    if (rooms[c].currentCap > 0) {
+                        var currentCap = rooms[c].currentCap;
+                        if (currentCap >= rooms[c].maxCap) { // Room is full
+                            currentCap = outerBoxSpec.height;
+                        } else { // Room is neither empty nor full
+                            currentCap = currentCap / rooms[c].maxCap;
+                        }
+                        innerBoxSpec.height = currentCap - innerBoxSpec.padding; // Height of the inner box including padding
+
+                        // Calculating the Y pos of the Innerbox based on the height
+                        innerBoxSpec.yOffset = (1 - currentCap) / 2;
+                        innerBoxSpec.yOffset = innerBoxSpec.yOffset - (innerBoxSpec.yOffset * 2); // Sign Reversal
+
+                        // Inner Box defintion #########################################
+                        var capIndicator = document.createElement('a-entity');
+                        // Attributes
+                        capIndicator.setAttribute('geometry', {
+                            primitive: 'box',
+                            height: innerBoxSpec.height,
+                            width: innerBoxSpec.width,
+                            depth: innerBoxSpec.depth,
+                        });
+                        // Apperance
+                        capIndicator.setAttribute('material', {
+                            color: innerBoxSpec.color,
+                        });
+                        // Position
+                        capIndicator.setAttribute('position', {
+                            x: boxesXYZ.x,
+                            y: innerBoxSpec.yOffset + boxesXYZ.y,
+                            z: boxesXYZ.z
+                        });
+
+                        background.appendChild(capIndicator);
+                    }
                 }
                 background.appendChild(el);
+
+                boxesXYZ.y = boxesXYZ.y - boxesXYZ.padding;
                 c++;
-                y = y - spacing;
             }
-        }
-    });
-
-    AFRAME.registerComponent('log', {
-        schema: {
-            type: 'string'
-        },
-
-        init: function() {
-            var stringToLog = this.data;
-            console.log(stringToLog);
         }
     });
 </script>
@@ -160,8 +160,8 @@
 <body style="margin : 0px; overflow: hidden;">
     <a-scene embedded arjs>
         <a-marker id="marker" preset="hiro">
-            <!--BackGround-->
-            <a-plane log="Hello Plane!" build id="background" color="grey" width="4" height="4.5" rotation="-90 0 0" opacity="0.5" transparent="true"></a-plane>
+            <!--AR.JS Marker Recognition-->
+            <a-plane build id="background" color="grey" width="3" height="1" rotation="-90 0 0" opacity="0.5" transparent="true"></a-plane>
         </a-marker>
         <a-entity camera></a-entity>
     </a-scene>
