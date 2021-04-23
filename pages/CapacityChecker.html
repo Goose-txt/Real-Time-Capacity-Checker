@@ -1,28 +1,28 @@
 <!DOCTYPE html>
 <html>
 <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
-<!-- we import arjs version without NFT but with marker + location based support -->
 <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
 <script>
     var rooms = [ // Data
         "Pontio", {
             name: "Bar",
             maxCap: 15,
-            currentCap: 5
+            curPopulation: 5
         }, {
             name: "Cinema",
             maxCap: 50,
-            currentCap: 30
+            curPopulation: 30
         }, {
             name: "Lecture Room",
             maxCap: 26,
-            currentCap: 0
+            curPopulation: 0
         }, {
             name: "Cafe",
             maxCap: 23,
-            currentCap: 25
+            curPopulation: 25
         }
     ]
+
 
     var boxesXYZ = {
         x: -1,
@@ -46,112 +46,105 @@
         height: null,
         width: .20,
         depth: .20,
-        color: "red",
+        color: "green",
         padding: 0.04,
         yOffset: null
     }
 
-
-    AFRAME.registerComponent('build', { // Remeber to call the Method in an entity parameters 
+    // Creates charts, adds headers, updates background size.
+    AFRAME.registerComponent('build', {
         init: function() {
+            // __________ Calculate Background Height __________
             background = document.querySelector("a-plane"); // Select the background
 
             var numOfObjects = rooms.length; // Find number of objects
-            bkHeight = numOfObjects + (numOfObjects * .15);
+            bkHeight = numOfObjects + (numOfObjects * .15); // Calculate the bkHeight according to number of rooms
             background.setAttribute('height', bkHeight)
 
-            boxesXYZ.padding = bkHeight / numOfObjects;
-            boxesXYZ.y = boxesXYZ.padding * (numOfObjects / 2);
+            boxesXYZ.padding = bkHeight / numOfObjects; // Set the amount padding between each chart
+            boxesXYZ.y = boxesXYZ.padding * (numOfObjects / 2); // Calculates the Y cor of the first object
 
-            var c = 0;
+            // __________ Add Rooms Data to the Scene __________
+            var c = 0; // Needed to interact with rooms array 
             for (x in rooms) {
-                var el = document.createElement('a-entity');
-
-                if (c == 0) { //Create & Postion title
-                    el.setAttribute('id', "title");
+                var el = document.createElement('a-entity'); // Used to create title and OuterBox entities 
+                // __________ Create title element __________
+                if (c == 0) {
+                    el.setAttribute('id', "title"); // Attributes & Apperance
                     el.setAttribute('text', {
-                        value: rooms[0] + " Capacity Checker",
+                        value: rooms[x] + " Capacity Checker",
                         color: "black"
                     });
                     el.setAttribute('position', "1 " + (boxesXYZ.y - (boxesXYZ.y * .1)) + " 0.1");
                     el.setAttribute('scale', "4 4 1");
-
                 } else {
-
-                    // Outer Box defintion #########################################
-                    // Attributes
-                    el.setAttribute('id', rooms[c].name);
+                    //  __________ Outer Box (Chart) defintion __________
+                    el.setAttribute('id', rooms[x].name); // Attributes
                     el.setAttribute('geometry', {
                         primitive: 'box',
                         height: outerBoxSpec.height,
                         width: outerBoxSpec.width,
                         depth: outerBoxSpec.depth,
                     });
-                    // Apperance
-                    el.setAttribute('material', {
+                    el.setAttribute('material', { // Apperance
                         color: outerBoxSpec.color,
                         opacity: outerBoxSpec.opacity,
                         transparent: outerBoxSpec.transparent
                     });
-                    // Position
-                    el.setAttribute('position', {
+                    el.setAttribute('position', { // Position
                         x: boxesXYZ.x,
                         y: boxesXYZ.y,
                         z: boxesXYZ.z
                     });
 
-                    // Room headers defintion #########################################
+                    //  __________ Chart headers defintion __________
                     var roomHeader = document.createElement('a-entity');
-                    roomHeader.setAttribute('id', rooms[c].name + "Header");
+                    roomHeader.setAttribute('id', rooms[x].name + "Header"); // Attributes & Apperance
                     roomHeader.setAttribute('text', {
-                        value: rooms[c].name + "\n" + rooms[c].currentCap + "/" + rooms[c].maxCap,
+                        value: rooms[x].name + "\n" + rooms[x].curPopulation + "/" + rooms[x].maxCap, // Included fraction e.g.20/30
                         color: "black"
                     });
                     roomHeader.setAttribute('position', ".5 " + boxesXYZ.y + " 0.1");
                     roomHeader.setAttribute('scale', "2.5 2.5 1");
-                    background.appendChild(roomHeader);
+                    background.appendChild(roomHeader); // Add header to the scene
 
-                    // Calculating the current capcity of the room (Height of the InnerBox) #########################################
-                    if (rooms[c].currentCap > 0) {
-                        var currentCap = rooms[c].currentCap;
-                        if (currentCap >= rooms[c].maxCap) { // Room is full
-                            currentCap = outerBoxSpec.height;
+                    // __________ Calculating the Height of the InnerBox if applicable __________
+                    var curPopulation = rooms[x].curPopulation; // Get current room population
+                    if (curPopulation > 0) { // Only runs if a room has populatuion greater than 0
+                        if (curPopulation >= rooms[x].maxCap) { // Room is full
+                            curPopulation = outerBoxSpec.height; // Set height to maximum
+                            innerBoxSpec.color = "red";
                         } else { // Room is neither empty nor full
-                            currentCap = currentCap / rooms[c].maxCap;
+                            curPopulation = curPopulation / rooms[x].maxCap; // Set height of innerBox
+                            innerBoxSpec.color = "green";
                         }
-                        innerBoxSpec.height = currentCap - innerBoxSpec.padding; // Height of the inner box including padding
-
-                        // Calculating the Y pos of the Innerbox based on the height
-                        innerBoxSpec.yOffset = (1 - currentCap) / 2;
+                        innerBoxSpec.height = curPopulation - innerBoxSpec.padding; // Minus padding from outer box
+                        innerBoxSpec.yOffset = (1 - curPopulation) / 2; // Calculating the Y pos of the Innerbox based on the height
                         innerBoxSpec.yOffset = innerBoxSpec.yOffset - (innerBoxSpec.yOffset * 2); // Sign Reversal
 
-                        // Inner Box defintion #########################################
+                        //  __________ Inner Box of Chart defintion __________
                         var capIndicator = document.createElement('a-entity');
-                        // Attributes
-                        capIndicator.setAttribute('geometry', {
+                        capIndicator.setAttribute('geometry', { // Attributes
                             primitive: 'box',
                             height: innerBoxSpec.height,
                             width: innerBoxSpec.width,
                             depth: innerBoxSpec.depth,
                         });
-                        // Apperance
-                        capIndicator.setAttribute('material', {
+                        capIndicator.setAttribute('material', { // Apperance
                             color: innerBoxSpec.color,
                         });
-                        // Position
-                        capIndicator.setAttribute('position', {
+                        capIndicator.setAttribute('position', { // Position
                             x: boxesXYZ.x,
                             y: innerBoxSpec.yOffset + boxesXYZ.y,
                             z: boxesXYZ.z
                         });
-
-                        background.appendChild(capIndicator);
+                        background.appendChild(capIndicator); // Add capIndicator to the scene
                     }
                 }
-                background.appendChild(el);
+                background.appendChild(el); // Add el to the scene
 
-                boxesXYZ.y = boxesXYZ.y - boxesXYZ.padding;
-                c++;
+                boxesXYZ.y = boxesXYZ.y - boxesXYZ.padding; // Calculate the Y cor of the next Object
+                c++; // Increment C
             }
         }
     });
@@ -159,8 +152,9 @@
 
 <body style="margin : 0px; overflow: hidden;">
     <a-scene embedded arjs>
+        <!--AR.JS Marker Recognition (Note: Smooth is enabled to reduce clipping of objects)-->
         <a-marker id="marker" preset="hiro" smooth="on">
-            <!--AR.JS Marker Recognition-->
+            <!-- Background defintion -->
             <a-plane build id="background" color="grey" width="3" height="1" rotation="-90 0 0" opacity="0.5" transparent="true"></a-plane>
         </a-marker>
         <a-entity camera></a-entity>
