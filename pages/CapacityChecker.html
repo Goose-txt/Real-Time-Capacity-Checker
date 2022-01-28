@@ -60,7 +60,7 @@
             background = document.querySelector("a-plane"); // Select the background
 
             var numOfObjects = rooms.length; // Find number of objects
-            bkHeight = numOfObjects + (numOfObjects * .075); // Calculate the bkHeight according to number of rooms
+            bkHeight = numOfObjects + (numOfObjects * .15); // Calculate the bkHeight according to number of rooms
             background.setAttribute('height', bkHeight)
 
             boxesXYZ.padding = bkHeight / numOfObjects; // Set the amount padding between each chart
@@ -108,6 +108,7 @@
                     });
                     roomHeader.setAttribute('position', (boxesXYZ.x + .5) + " " + boxesXYZ.y + " 0.1");
                     roomHeader.setAttribute('scale', "2.5 2.5 1");
+                    roomHeader.setAttribute('color', "white");
                     background.appendChild(roomHeader); // Add header to the scene
 
                     // __________ Calculating the Height of the InnerBox if applicable __________
