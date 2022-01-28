@@ -144,7 +144,7 @@
                     }
                 }
                 background.appendChild(el); // Add el to the scene
-                if (c % 2 == 0) {
+                if (c % 2 == 0 && c != 0) {
                     boxesXYZ.x = boxesXYZ.x + boxesXYZ.padding;
                 } else {
                     boxesXYZ.y = boxesXYZ.y - boxesXYZ.padding;
@@ -158,9 +158,9 @@
             }
 
             if (curPop >= totalCap) { // Room is full
-                background.color = "red";
-            } else { // Room is neither empty nor full
-                background.color = "green";
+                background.setAttribute('color', "red")
+            } else { // Room is neither empty nor full\
+                background.setAttribute('color', "green")
             }
         }
     });
