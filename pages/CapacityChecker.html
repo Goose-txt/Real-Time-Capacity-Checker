@@ -144,8 +144,10 @@
                 background.appendChild(el); // Add el to the scene
                 if (c % 2 == 0) {
                     boxesXYZ.x = boxesXYZ.x + boxesXYZ.padding;
+                } else {
+                    boxesXYZ.y = boxesXYZ.y - boxesXYZ.padding; // Calculate the Y cor of the next Object
                 }
-                boxesXYZ.y = boxesXYZ.y - boxesXYZ.padding; // Calculate the Y cor of the next Object
+
                 c++; // Increment C
             }
         }
