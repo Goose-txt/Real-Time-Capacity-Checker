@@ -146,12 +146,11 @@
                 background.appendChild(el); // Add el to the scene
                 if (c % 2 == 0 && c != 0) {
                     boxesXYZ.x = boxesXYZ.x + boxesXYZ.padding;
-                } else {
                     boxesXYZ.y = boxesXYZ.y - boxesXYZ.padding;
-                    if (c > 0) {
-                        boxesXYZ.x = boxesXYZ.x - boxesXYZ.padding;
-                    }
+                } else {
+                    boxesXYZ.x = boxesXYZ.x - boxesXYZ.padding;
                 }
+
                 totalCap = totalCap + rooms[x].maxCap
                 curPop = curPop + rooms[x].curPopulation
                 c++; // Increment C
