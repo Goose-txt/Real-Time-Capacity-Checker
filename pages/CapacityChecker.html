@@ -27,7 +27,7 @@
     var curPop = 0
 
     var boxesXYZ = {
-        x: 0,
+        x: -1,
         y: null,
         z: .25,
         padding: null
@@ -64,7 +64,7 @@
             background.setAttribute('height', bkHeight)
 
             boxesXYZ.padding = bkHeight / numOfObjects; // Set the amount padding between each chart
-            boxesXYZ.y = boxesXYZ.padding * (numOfObjects / 2); // Calculates the Y cor of the first object
+            boxesXYZ.y = boxesXYZ.padding * (numOfObjects / 2) + .25; // Calculates the Y cor of the first object
 
             // __________ Add Rooms Data to the Scene __________
             var c = 0; // Needed to interact with rooms array 
