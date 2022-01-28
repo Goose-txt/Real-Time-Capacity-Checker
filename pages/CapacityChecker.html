@@ -145,10 +145,10 @@
                 }
                 background.appendChild(el); // Add el to the scene
                 if (c % 2 == 0 && c != 0) {
-                    boxesXYZ.x = boxesXYZ.x + boxesXYZ.padding;
+                    boxesXYZ.x = boxesXYZ.x - boxesXYZ.padding;
                     boxesXYZ.y = boxesXYZ.y - boxesXYZ.padding;
                 } else {
-                    boxesXYZ.x = boxesXYZ.x - boxesXYZ.padding;
+                    boxesXYZ.x = boxesXYZ.x + boxesXYZ.padding;
                 }
 
                 totalCap = totalCap + rooms[x].maxCap
@@ -170,7 +170,7 @@
         <!--AR.JS Marker Recognition (Note: Smooth is enabled to reduce clipping of objects)-->
         <a-marker id="marker" preset="hiro" smooth="on">
             <!-- Background defintion -->
-            <a-plane build id="background" color="grey" width="3" height="1" rotation="-90 0 0" opacity="0.5" transparent="true"></a-plane>
+            <a-plane build id="background" color="grey" width="3" height="1" rotation="-90 0 0" opacity="0.3" transparent="true"></a-plane>
         </a-marker>
         <a-entity camera></a-entity>
     </a-scene>
