@@ -106,7 +106,7 @@
                         value: rooms[x].name + "\n" + rooms[x].curPopulation + "/" + rooms[x].maxCap, // Included fraction e.g.20/30
                         color: "black"
                     });
-                    roomHeader.setAttribute('position', ".5 " + boxesXYZ.y + " 0.1");
+                    roomHeader.setAttribute('position', boxesXYZ.x + .5 + boxesXYZ.y + " 0.1");
                     roomHeader.setAttribute('scale', "2.5 2.5 1");
                     background.appendChild(roomHeader); // Add header to the scene
 
