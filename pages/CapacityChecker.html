@@ -145,7 +145,10 @@
                 if (c % 2 == 0) {
                     boxesXYZ.x = boxesXYZ.x + boxesXYZ.padding;
                 } else {
-                    boxesXYZ.y = boxesXYZ.y - boxesXYZ.padding; // Calculate the Y cor of the next Object
+                    boxesXYZ.y = boxesXYZ.y - boxesXYZ.padding;
+                    if (c > 0) {
+                        boxesXYZ.x = boxesXYZ.x - boxesXYZ.padding;
+                    }
                 }
 
                 c++; // Increment C
