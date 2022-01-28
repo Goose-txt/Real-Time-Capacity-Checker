@@ -151,9 +151,10 @@
                 } else {
                     boxesXYZ.x = boxesXYZ.x + boxesXYZ.padding;
                 }
-
-                totalCap = totalCap + rooms[x].maxCap
-                curPop = curPop + rooms[x].curPopulation
+                if (x != 0) {
+                    totalCap = totalCap + rooms[x].maxCap
+                    curPop = curPop + rooms[x].curPopulation
+                }
                 c++; // Increment C
             }
 
@@ -162,6 +163,7 @@
             } else { // Room is neither empty nor full\
                 background.setAttribute('color', "green")
             }
+
         }
     });
 </script>
