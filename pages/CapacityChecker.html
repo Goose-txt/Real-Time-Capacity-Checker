@@ -142,8 +142,10 @@
                     }
                 }
                 background.appendChild(el); // Add el to the scene
-
-                boxesXYZ.x = boxesXYZ.x - boxesXYZ.padding; // Calculate the Y cor of the next Object
+                if (c % 2 == 0) {
+                    boxesXYZ.x = boxesXYZ.x + boxesXYZ.padding;
+                }
+                boxesXYZ.y = boxesXYZ.y - boxesXYZ.padding; // Calculate the Y cor of the next Object
                 c++; // Increment C
             }
         }
